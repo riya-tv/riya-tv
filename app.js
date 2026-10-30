@@ -65,8 +65,14 @@
     adCapsuleBtn: document.getElementById('adCapsuleBtn'),
     adNumberTxt: document.getElementById('adNumberTxt'),
     poweredByBrand: document.getElementById('poweredByBrand'),
-    disclaimerTxt: document.getElementById('disclaimerTxt')
+    disclaimerTxt: document.getElementById('disclaimerTxt'),
+    adLightboxModal: document.getElementById('adLightboxModal'),
+    adLightboxBackdrop: document.getElementById('adLightboxBackdrop'),
+    adLightboxImage: document.getElementById('adLightboxImage'),
+    adLightboxClose: document.getElementById('adLightboxClose')
   };
+
+  let isSwiping = false;
 
   // --- 1. Dynamic API Loader (Fetches Stream, Social Links, Phone, Banners) ---
   function fetchStationData() {
@@ -295,16 +301,36 @@
   function handleTouchStart(e) {
     touchStartX = e.changedTouches[0].screenX;
     isCarouselPaused = true;
+    isSwiping = false;
   }
 
   function handleTouchEnd(e) {
     touchEndX = e.changedTouches[0].screenX;
     isCarouselPaused = false;
     const diff = touchStartX - touchEndX;
-    if (Math.abs(diff) > 35) {
+    if (Math.abs(diff) > 30) {
+      isSwiping = true;
       if (diff > 0) nextSlide();
       else prevSlide();
+    } else {
+      isSwiping = false;
     }
+  }
+
+  // --- 2b. Fullsize Advertisement Lightbox ---
+  function openAdLightbox(imageSrc) {
+    if (!DOM.adLightboxModal || !DOM.adLightboxImage || !imageSrc) return;
+    DOM.adLightboxImage.src = imageSrc;
+    DOM.adLightboxModal.classList.add('active');
+    isCarouselPaused = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeAdLightbox() {
+    if (!DOM.adLightboxModal) return;
+    DOM.adLightboxModal.classList.remove('active');
+    isCarouselPaused = false;
+    document.body.style.overflow = '';
   }
 
   // --- 3. Live Stream Video Engine ---
@@ -505,6 +531,45 @@
       DOM.carouselViewport.addEventListener('touchstart', handleTouchStart, { passive: true });
       DOM.carouselViewport.addEventListener('touchend', handleTouchEnd, { passive: true });
     }
+
+    // Click banner to open full size lightbox
+    if (DOM.carouselTrack) {
+      DOM.carouselTrack.addEventListener('click', (e) => {
+        if (isSwiping) {
+          isSwiping = false;
+          return;
+        }
+        if (e.target.closest('.slide-arrow') || e.target.closest('.indicator-dot')) return;
+        const activeSlide = DOM.carouselTrack.querySelector('.banner-slide.active');
+        if (activeSlide) {
+          const img = activeSlide.querySelector('.slide-image');
+          if (img && img.src) {
+            openAdLightbox(img.src);
+          }
+        }
+      });
+    }
+
+    // Lightbox close handlers
+    if (DOM.adLightboxClose) {
+      DOM.adLightboxClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeAdLightbox();
+      });
+    }
+
+    if (DOM.adLightboxBackdrop) {
+      DOM.adLightboxBackdrop.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeAdLightbox();
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        closeAdLightbox();
+      }
+    });
   }
 
   // --- Bootstrap ---
