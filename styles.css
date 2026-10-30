@@ -417,12 +417,12 @@ body {
   width: 100%;
   position: relative;
   flex: 0 0 auto;
-  height: clamp(115px, 16vh, 145px);
-  max-height: 150px;
+  height: clamp(160px, 21.5vh, 195px);
+  max-height: 200px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 2px 0;
+  margin: 4px 0;
 }
 
 .banner-viewport {
