@@ -1,0 +1,681 @@
+/* ==============================================================================
+   Riya TV Live Broadcast - Pure Mobile Experience
+   Faithfully styled to mirror Android app /var/www/nanbateam/app/riya
+   Responsive across all screen sizes (Compact 320px to Large Mobile & Tablet)
+   ============================================================================== */
+
+@charset "UTF-8";
+
+/* --- Custom App Fonts --- */
+@font-face {
+  font-family: 'Berlin Sans FB';
+  src: url('assets/fonts/berlin_ans_fb_regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Berkshire Swash';
+  src: url('assets/fonts/berkshire_swash_regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Colors from /var/www/nanbateam/app/riya/app/src/main/res/values/colors.xml */
+  --bg-dark-blue: #000137;
+  --bg-nav-blue: #00029b;
+  --bg-mid-blue: #000155;
+  --green-start: #376204;
+  --green-end: #549a03;
+  --white: #ffffff;
+  --live-red: #ff2222;
+
+  --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-berlin: 'Berlin Sans FB', var(--font-main);
+  --font-berkshire: 'Berkshire Swash', cursive, serif;
+
+  --glass-border: rgba(255, 255, 255, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: var(--bg-dark-blue);
+  color: var(--white);
+  font-family: var(--font-main);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background gradient matching app_background.xml (270 deg gradient from #000137 to #00029b) */
+body {
+  background: linear-gradient(180deg, var(--bg-dark-blue) 0%, var(--bg-mid-blue) 48%, var(--bg-nav-blue) 100%);
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+/* ==============================================================================
+   Mobile App Shell (activity_nanban_tv.xml layout container)
+   ============================================================================== */
+.mobile-app-shell {
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: clamp(8px, 1.6vh, 14px) clamp(10px, 3vw, 16px) clamp(10px, 2vh, 16px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(8px, 1.4vh, 12px);
+  position: relative;
+  background: transparent;
+}
+
+/* On desktop monitors: center as a clean, authentic mobile frame */
+@media (min-width: 500px) {
+  body {
+    padding: clamp(10px, 2vh, 24px) 12px;
+    align-items: center;
+  }
+  .mobile-app-shell {
+    background: linear-gradient(180deg, var(--bg-dark-blue) 0%, var(--bg-mid-blue) 48%, var(--bg-nav-blue) 100%);
+    border-radius: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 
+      0 0 0 2px rgba(255, 255, 255, 0.08),
+      0 25px 60px rgba(0, 0, 0, 0.9),
+      0 0 80px rgba(0, 2, 155, 0.45);
+    height: auto;
+    min-height: 780px;
+    max-height: 940px;
+  }
+}
+
+/* ==============================================================================
+   1. Header Section (Riya TV Official Logo + Live Badge)
+   ============================================================================== */
+.app-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.header-logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.header-logo-img {
+  max-width: 85%;
+  width: auto;
+  height: auto;
+  max-height: clamp(44px, 7.5vh, 60px);
+  object-fit: contain;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.5));
+}
+
+.live-badge-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: clamp(3px, 0.8vh, 6px);
+  padding: 2px 10px;
+  background: rgba(16, 185, 129, 0.16);
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  border-radius: 20px;
+  font-size: clamp(9px, 1.2vh, 10.5px);
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: #10b981;
+  text-transform: uppercase;
+}
+
+.live-pulse-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulse-dot 1.5s infinite;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+/* ==============================================================================
+   2. Live Video Player (simple_player / PlayerView)
+   ============================================================================== */
+.player-container {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: clamp(10px, 2vh, 15px);
+  overflow: hidden;
+  background-color: #000;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75), 0 0 30px rgba(0, 2, 155, 0.25);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.player-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: #000;
+  display: block;
+}
+
+/* Top Quality Badge */
+.player-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.player-badge .status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.player-badge.connecting {
+  color: #f59e0b;
+}
+
+.player-badge.connecting .status-dot {
+  background: #f59e0b;
+}
+
+.player-badge.offline {
+  color: #ef4444;
+}
+
+.player-badge.offline .status-dot {
+  background: #ef4444;
+}
+
+/* Tap to Unmute Sound Overlay */
+.player-unmute-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 1, 55, 0.65);
+  backdrop-filter: blur(4px);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  cursor: pointer;
+}
+
+.player-unmute-overlay.active {
+  display: flex;
+}
+
+.unmute-btn {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 24px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.5);
+  cursor: pointer;
+  animation: pulse-unmute 2s infinite ease-in-out;
+}
+
+@keyframes pulse-unmute {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Spinner / Connecting Overlay */
+.player-status-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 1, 55, 0.85);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 15;
+  text-align: center;
+  padding: 16px;
+}
+
+.player-status-overlay.active {
+  display: flex;
+}
+
+.spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #ef4444;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.player-status-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  max-width: 240px;
+}
+
+/* Floating Controls Bar */
+.player-controls {
+  position: absolute;
+  bottom: 6px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.control-cluster {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.icon-button {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.icon-button:hover,
+.icon-button:active {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.08);
+}
+
+.icon-button svg,
+.icon-button img {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+}
+
+/* ==============================================================================
+   3. Social Media Layouts (social_media_layouts in activity_nanban_tv.xml)
+   Clean, unconstrained Icons8 icons directly matching the native Android UI
+   ============================================================================== */
+.social-media-layouts {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(6px, 1.8vw, 12px);
+  margin-top: clamp(4px, 1vh, 8px);
+  margin-bottom: clamp(4px, 1vh, 8px);
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+.social-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  padding: 2px;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), filter 0.22s ease;
+}
+
+.social-item:hover,
+.social-item:active {
+  transform: translateY(-2px) scale(1.15);
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+}
+
+.social-item img,
+.social-item svg {
+  width: clamp(34px, 8.8vw, 42px);
+  height: clamp(34px, 8.8vw, 42px);
+  object-fit: contain;
+  display: block;
+}
+
+/* ==============================================================================
+   4. Banner Advertisement Carousel (addRelative / my_pager)
+   ============================================================================== */
+.banner-slider-container {
+  width: 100%;
+  position: relative;
+  flex: 1;
+  min-height: clamp(140px, 22vh, 210px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.banner-viewport {
+  width: 100%;
+  height: 100%;
+  min-height: clamp(140px, 22vh, 210px);
+  border-radius: clamp(10px, 1.8vh, 14px);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+  background-color: #030712;
+  cursor: pointer;
+}
+
+.banner-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.banner-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: scale(0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  z-index: 2;
+}
+
+.slide-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(14px) brightness(0.4);
+  transform: scale(1.12);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.slide-image {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Nav Arrows */
+.slide-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+.slide-arrow:hover,
+.slide-arrow:active {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.9);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.slide-arrow.prev { left: 6px; }
+.slide-arrow.next { right: 6px; }
+
+/* Dot Indicators */
+.banner-indicators {
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  z-index: 10;
+}
+
+.indicator-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.indicator-dot.active {
+  width: 15px;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+}
+
+/* ==============================================================================
+   5. "FOR ADVERTISEMENT" Capsule Box (mobile_num_relative)
+   ============================================================================== */
+.advertisement-section {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.arrow-icon {
+  width: clamp(28px, 7vw, 36px);
+  height: clamp(28px, 7vw, 36px);
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+}
+
+.arrow-icon.left {
+  animation: bounce-left 2s infinite ease-in-out;
+}
+
+.arrow-icon.right {
+  animation: bounce-right 2s infinite ease-in-out;
+}
+
+@keyframes bounce-left {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-3px); }
+}
+
+@keyframes bounce-right {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
+
+/* Capsule Box (bg_corner_ovalshape.xml emulation) */
+.advertisement-capsule {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6px, 1.2vh, 10px) 14px;
+  text-decoration: none;
+  background: linear-gradient(90deg, var(--green-start) 0%, var(--green-end) 50%, var(--green-end) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  border-radius: 36px;
+  box-shadow: 0 5px 16px rgba(55, 98, 4, 0.55);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.advertisement-capsule:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 20px rgba(55, 98, 4, 0.75);
+}
+
+.advertisement-capsule:active {
+  transform: translateY(1px);
+}
+
+.ad-heading {
+  font-family: var(--font-berlin);
+  font-size: clamp(9px, 1.3vh, 10.5px);
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: var(--white);
+  text-transform: uppercase;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  line-height: 1.2;
+}
+
+.ad-phone {
+  font-family: var(--font-berlin);
+  font-size: clamp(12.5px, 2vh, 15px);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--white);
+  line-height: 1.2;
+  margin-top: 2px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* ==============================================================================
+   6. Footer (website_name in activity_nanban_tv.xml)
+   ============================================================================== */
+.app-footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-shrink: 0;
+  padding-bottom: 2px;
+}
+
+.powered-by-text {
+  font-family: var(--font-berkshire);
+  font-size: clamp(11.5px, 1.8vh, 13.5px);
+  color: var(--white);
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+.powered-by-text:hover {
+  opacity: 1;
+}
+
+.disclaimer-text {
+  font-size: clamp(8px, 1.2vh, 9.5px);
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 2px;
+}
+
+.home-bar-indicator {
+  width: 80px;
+  height: 3.5px;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 9999px;
+  margin: clamp(4px, 1vh, 8px) auto 0;
+}

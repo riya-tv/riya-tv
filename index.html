@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, user-scalable=yes">
+  <title>Riya TV — Live Broadcast</title>
+  
+  <!-- Meta & App Icon -->
+  <meta name="description" content="Watch Riya TV Official 24x7 Live Stream. High-definition broadcast.">
+  <meta name="theme-color" content="#000137">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <link rel="icon" type="image/png" href="https://public.nanbateam.com/banners/banner_3_1792744814_6a41014d.png">
+  <link rel="apple-touch-icon" href="https://public.nanbateam.com/banners/banner_3_1792744814_6a41014d.png">
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- HLS Player Engine (Bundled with CDN fallback) -->
+  <script src="assets/js/hls.min.js"></script>
+  <script>
+    if (typeof Hls === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"><\/script>');
+    }
+  </script>
+</head>
+<body>
+
+  <!-- =========================================================================
+       Mobile Screen Container (Faithful activity_nanban_tv.xml Recreation)
+       ========================================================================= -->
+  <div class="mobile-app-shell">
+
+    <!-- 1. Header (imageView in activity_nanban_tv.xml - Official Riya TV Logo) -->
+    <header class="app-header">
+      <div class="header-logo-container">
+        <img 
+          src="https://public.nanbateam.com/banners/banner_3_1792744814_6a41014d.png" 
+          alt="Riya TV" 
+          class="header-logo-img" 
+          id="headerLogo"
+          onerror="this.src='assets/images/riya_tv_logo.png'"
+        >
+      </div>
+      <div class="live-badge-strip">
+        <span class="live-pulse-dot"></span>
+        LIVE ON AIR
+      </div>
+    </header>
+
+    <!-- 2. Live Stream Player (simple_player / PlayerView) -->
+    <section class="player-container" id="playerCard">
+      <video id="playerVideo" class="player-video" playsinline autoplay muted></video>
+
+      <!-- Live Quality Indicator Badge -->
+      <div class="player-badge connecting" id="playerBadge">
+        <span class="status-dot"></span>
+        <span id="playerBadgeText">Connecting...</span>
+      </div>
+
+      <!-- Tap to Unmute Overlay -->
+      <div class="player-unmute-overlay" id="unmuteOverlay">
+        <button class="unmute-btn" id="unmuteBtn">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+          </svg>
+          Click to Unmute Sound
+        </button>
+      </div>
+
+      <!-- Status & Reconnection Overlay -->
+      <div class="player-status-overlay" id="statusOverlay">
+        <div class="spinner"></div>
+        <p class="player-status-text" id="statusMessage">Connecting to Live Feed...</p>
+      </div>
+
+      <!-- Player Bottom Interactive Controls -->
+      <div class="player-controls">
+        <div class="control-cluster">
+          <button class="icon-button" id="playToggleBtn" title="Play / Pause">
+            <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          </button>
+          <button class="icon-button" id="muteToggleBtn" title="Mute / Unmute">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+        </div>
+        <div class="control-cluster">
+          <button class="icon-button" id="reloadBtn" title="Reload Stream">
+            <img src="assets/icons/ic_refresh.png" alt="Reload">
+          </button>
+          <button class="icon-button" id="fullscreenBtn" title="Fullscreen">
+            <img src="assets/icons/ic_fullscreen_open.png" alt="Fullscreen">
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Social Media Layouts (social_media_layouts in activity_nanban_tv.xml) -->
+    <nav class="social-media-layouts" aria-label="Social Media Links">
+      <!-- Facebook (icons8_facebook) -->
+      <a href="https://www.facebook.com/profile.php?id=100069303665112" target="_blank" rel="noopener noreferrer" class="social-item fb" id="social_facebook" title="Facebook Page">
+        <img src="assets/icons/facebook.svg" alt="Facebook">
+      </a>
+
+      <!-- Instagram (icons8_instagram) -->
+      <a href="https://www.instagram.com/candyriyaz" target="_blank" rel="noopener noreferrer" class="social-item insta" id="social_instagram" title="Instagram">
+        <img src="assets/icons/instagram.svg" alt="Instagram">
+      </a>
+
+      <!-- YouTube (icons8_youtube) -->
+      <a href="https://youtube.com/@candyriyaz" target="_blank" rel="noopener noreferrer" class="social-item yt" id="social_youtube" title="YouTube Channel">
+        <img src="assets/icons/youtube.svg" alt="YouTube">
+      </a>
+
+      <!-- WhatsApp (icons8_whatsapp) -->
+      <a href="https://wa.me/919787790707" target="_blank" rel="noopener noreferrer" class="social-item wa" id="social_whatsapp" title="WhatsApp Channel">
+        <img src="assets/icons/whatsapp.svg" alt="WhatsApp">
+      </a>
+
+      <!-- Twitter / X (icons8_twitter) -->
+      <a href="https://x.com/candyriyaz" target="_blank" rel="noopener noreferrer" class="social-item tw" id="social_twitter" title="Twitter / X">
+        <img src="assets/icons/twitter.svg" alt="Twitter">
+      </a>
+
+      <!-- Official Website (web.png) -->
+      <a href="https://riya.tv.nanbateam.com" target="_blank" rel="noopener noreferrer" class="social-item wb" id="social_website" title="Official Website">
+        <img src="assets/icons/web.png" alt="Website" onerror="this.src='assets/icons/web.svg'">
+      </a>
+    </nav>
+
+    <!-- 4. Banner Advertisement Carousel (addRelative / my_pager) -->
+    <section class="banner-slider-container">
+      <div class="banner-viewport" id="carouselViewport">
+        <div class="banner-track" id="carouselTrack">
+          <div class="banner-slide active" data-index="0">
+            <img src="https://public.nanbateam.com/posters/1.jpg" alt="" class="slide-backdrop" aria-hidden="true" onerror="this.onerror=null; this.src='assets/images/posters/1.jpg';">
+            <img src="https://public.nanbateam.com/posters/1.jpg" alt="Advertisement 1" class="slide-image" onerror="this.onerror=null; this.src='assets/images/posters/1.jpg';">
+          </div>
+          <div class="banner-slide" data-index="1">
+            <img src="https://public.nanbateam.com/posters/2.jpg" alt="" class="slide-backdrop" aria-hidden="true" onerror="this.onerror=null; this.src='assets/images/posters/2.jpg';">
+            <img src="https://public.nanbateam.com/posters/2.jpg" alt="Advertisement 2" class="slide-image" onerror="this.onerror=null; this.src='assets/images/posters/2.jpg';">
+          </div>
+          <div class="banner-slide" data-index="2">
+            <img src="https://public.nanbateam.com/posters/3.jpg" alt="" class="slide-backdrop" aria-hidden="true" onerror="this.onerror=null; this.src='assets/images/posters/3.jpg';">
+            <img src="https://public.nanbateam.com/posters/3.jpg" alt="Advertisement 3" class="slide-image" onerror="this.onerror=null; this.src='assets/images/posters/3.jpg';">
+          </div>
+          <div class="banner-slide" data-index="3">
+            <img src="https://public.nanbateam.com/posters/4.jpg" alt="" class="slide-backdrop" aria-hidden="true" onerror="this.onerror=null; this.src='assets/images/posters/4.jpg';">
+            <img src="https://public.nanbateam.com/posters/4.jpg" alt="Advertisement 4" class="slide-image" onerror="this.onerror=null; this.src='assets/images/posters/4.jpg';">
+          </div>
+        </div>
+
+        <!-- Touch/Click Arrows -->
+        <button class="slide-arrow prev" id="carouselPrev" aria-label="Previous Banner">&#10094;</button>
+        <button class="slide-arrow next" id="carouselNext" aria-label="Next Banner">&#10095;</button>
+
+        <!-- Dot Indicators (TabLayout emulation) -->
+        <div class="banner-indicators" id="carouselIndicators">
+          <span class="indicator-dot active" data-index="0"></span>
+          <span class="indicator-dot" data-index="1"></span>
+          <span class="indicator-dot" data-index="2"></span>
+          <span class="indicator-dot" data-index="3"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. "FOR ADVERTISEMENT" Capsule (mobile_num_relative) -->
+    <section class="advertisement-section">
+      <!-- Left Arrow -->
+      <img src="assets/images/arrow_left.png" alt="" class="arrow-icon left">
+
+      <!-- Oval Green Pill (bg_corner_ovalshape.xml emulation) -->
+      <a href="tel:+919787790707" class="advertisement-capsule" id="adCapsuleBtn" title="Call for Advertisement">
+        <span class="ad-heading">FOR ADVERTISEMENT CONTACT</span>
+        <span class="ad-phone" id="adNumberTxt">Contact : +91 97877 90707</span>
+      </a>
+
+      <!-- Right Arrow -->
+      <img src="assets/images/arrow_right.png" alt="" class="arrow-icon right">
+    </section>
+
+    <!-- 6. Footer (website_name in activity_nanban_tv.xml) -->
+    <footer class="app-footer">
+      <a href="https://www.nanbateam.com" target="_blank" rel="noopener noreferrer" class="powered-by-text" id="poweredByBrand" title="NanbaTeam Platform">
+        powered by : nanbateam.com
+      </a>
+      <p class="disclaimer-text" id="disclaimerTxt">
+        Official Riya TV 24x7 Live Streaming by NanbaTeam
+      </p>
+      <div class="home-bar-indicator"></div>
+    </footer>
+
+  </div><!-- /mobile-app-shell -->
+
+  <!-- Main JavaScript Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
